@@ -1,26 +1,30 @@
-
+/*
+  PROBLEM : BORING SEGMENTS
+  https://codeforces.com/contest/1555/problem/E
+*/
 #include<bits/stdc++.h>
 #define ll long long
 #define pb push_back
 #define all(V) V.begin(),V.end()
 using namespace std;
-int st[4*1000001];
-int lazy[4*1000001];
+int st[4*1000001];   // Segment Tree
+int lazy[4*1000001];  // Lazy Tree
 
 void build(int si,int ss,int se)
 {
     if(ss==se)
     {
+        //st[si] = arr[ss];    // build from the given array.
         return;
     }
     int mid = (ss+se)/2;
     build(2*si,ss,mid);
     build(2*si+1,mid+1,se);
-    st[si] = min(st[2*si],st[2*si+1]);
+    st[si] = min(st[2*si],st[2*si+1]);  // the merge step or function
 }
 void update(int si,int ss,int se,int qs,int qe,int x)
 {
-    if(lazy[si]!=0)
+    if(lazy[si]!=0)      // if lazy update present on the current node
     {
         int lz_sum = lazy[si];
         st[si]+=lz_sum;
@@ -38,7 +42,7 @@ void update(int si,int ss,int se,int qs,int qe,int x)
     if(ss>=qs && se<=qe)
     {
         st[si]+=x;
-        if(ss!=se)
+        if(ss!=se) // lazy updates on children
         {
             lazy[2*si]+=x;
             lazy[2*si+1]+=x;
@@ -49,12 +53,12 @@ void update(int si,int ss,int se,int qs,int qe,int x)
 
     update(2*si,ss,mid,qs,qe,x);
     update(2*si+1,mid+1,se,qs,qe,x);
-    st[si] = min(st[2*si],st[2*si+1]);
+    st[si] = min(st[2*si],st[2*si+1]);   // merge function
 }
 
 int query(int si,int ss,int se,int qs,int qe)
 {
-    if(lazy[si]!=0)
+    if(lazy[si]!=0)     // if lazy update present on the current node
     {
         int lz_sum = lazy[si];
         st[si]+=lz_sum;
@@ -71,7 +75,7 @@ int query(int si,int ss,int se,int qs,int qe)
         return INT_MAX;
     if(ss>=qs && se<=qe)
     {
-        return st[si];
+        return st[si];   // Directly return the value of the given range
     }
     int mid = (ss+se)/2;
 
